@@ -1,0 +1,2857 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    119496,       2849]
+NotebookOptionsPosition[    117961,       2818]
+NotebookOutlinePosition[    118295,       2833]
+CellTagsIndexPosition[    118252,       2830]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Pure Mutual Best-Response Graph", "Title",
+ CellChangeTimes->{{3.82694783373212*^9, 3.826947841731585*^9}, {
+  3.8345445998607063`*^9, 
+  3.834544606100047*^9}},ExpressionUUID->"9a192653-bfd8-4724-996c-\
+e7a80331f759"],
+
+Cell["\<\
+We start by creating a list of 8 bit digits to encode all possible strategy \
+pairs.\
+\>", "Text",
+ CellChangeTimes->{{3.834545387420216*^9, 
+  3.8345454124112873`*^9}},ExpressionUUID->"277f43aa-5d1a-46d7-ae8c-\
+f0b4baddd4c9"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"bitlist", "=", 
+   RowBox[{"{", 
+    RowBox[{"{", 
+     RowBox[{
+     "0", ",", " ", "0", ",", " ", "0", ",", " ", "0", ",", " ", "0", ",", 
+      " ", "0", ",", " ", "0", ",", " ", "0"}], "}"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Do", "[", 
+  RowBox[{
+   RowBox[{"If", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Length", "[", 
+       RowBox[{"IntegerDigits", "[", 
+        RowBox[{"n", ",", " ", "2"}], "]"}], "]"}], "<", "8"}], ",", 
+     RowBox[{"AppendTo", "[", 
+      RowBox[{"bitlist", ",", " ", 
+       RowBox[{"Join", "[", " ", 
+        RowBox[{
+         RowBox[{"ConstantArray", "[", 
+          RowBox[{"0", ",", " ", 
+           RowBox[{"8", "-", 
+            RowBox[{"Length", "[", 
+             RowBox[{"IntegerDigits", "[", 
+              RowBox[{"n", ",", " ", "2"}], "]"}], "]"}]}]}], "]"}], ",", " ", 
+         RowBox[{"IntegerDigits", "[", 
+          RowBox[{"n", ",", " ", "2"}], "]"}]}], "]"}]}], "]"}], ",", " ", 
+     RowBox[{"AppendTo", "[", 
+      RowBox[{"bitlist", ",", " ", 
+       RowBox[{"IntegerDigits", "[", 
+        RowBox[{"n", ",", " ", "2"}], "]"}]}], "]"}]}], "]"}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"n", ",", " ", "1", ",", "255"}], "}"}]}], "]"}]}], "Input",
+ CellChangeTimes->{3.834545420070889*^9},
+ CellLabel->"In[1]:=",ExpressionUUID->"a923fd40-dfb4-479b-8f86-6a49e83d2bc3"],
+
+Cell["\<\
+By filling in the values for t, r, p, s, and delta one is interested in the \
+code below produces the appropriate pmBR graph. The first block calculates \
+the best-responses given the strategy of the opponent for each player.\
+\>", "Text",
+ CellChangeTimes->{{3.826955470207026*^9, 3.8269555448386307`*^9}, 
+   3.826956085236383*^9, 3.834544578382945*^9, {3.834544615048574*^9, 
+   3.8345446776378*^9}, {3.834545639800332*^9, 3.8345456632807293`*^9}, {
+   3.834551222535336*^9, 
+   3.8345512235252934`*^9}},ExpressionUUID->"a4f0a322-0c1d-4a02-91b5-\
+a57967bf3386"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"player1BR", " ", "=", 
+   RowBox[{"{", "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"player2BR", "=", 
+   RowBox[{"{", "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"strategies", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "0", ",", " ", "0", ",", " ", "1"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "0", ",", " ", "1", ",", " ", "0"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "1", ",", " ", "0", ",", " ", "0"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "0", ",", " ", "0", ",", " ", "0"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "0", ",", " ", "1", ",", " ", "1"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "1", ",", " ", "1", ",", " ", "0"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "1", ",", " ", "0", ",", " ", "0"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "0", ",", " ", "0", ",", " ", "1"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "0", ",", " ", "1", ",", " ", "0"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "1", ",", " ", "0", ",", " ", "1"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "1", ",", " ", "1", ",", " ", "1"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "0", ",", " ", "1", ",", " ", "1"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "1", ",", " ", "0", ",", " ", "1"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "1", ",", " ", "1", ",", " ", "0"}], "}"}], ",", 
+     " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "1", ",", " ", "1", ",", " ", "1"}], "}"}]}], 
+    "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"r", "=", "1.0"}], ",", " ", 
+     RowBox[{"p", "=", "0.0"}], ",", " ", 
+     RowBox[{"t", "=", "1.5"}], ",", " ", 
+     RowBox[{"s", "=", 
+      RowBox[{"-", "0.5"}]}], ",", " ", 
+     RowBox[{"delta", "=", 
+      RowBox[{"3", "/", "10"}]}]}], "}"}], ",", 
+   RowBox[{"Do", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"bestresponse1", "=", 
+       RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"bestresponse2", "=", 
+       RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Assuming", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q211", ">", "q212"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "\[Equal]", "0"}], "]"}]}], 
+            " ", "+", " ", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q211", "<", "q212"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "\[Equal]", "1"}], "]"}]}]}], 
+           "]"}], ",", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q221", ">", "q222"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "\[Equal]", "0"}], "]"}]}], 
+            " ", "+", " ", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q221", "<", "q222"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "\[Equal]", "1"}], "]"}]}]}], 
+           "]"}], ",", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q231", ">", "q232"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "3", "]"}], "]"}], "\[Equal]", "0"}], "]"}]}], 
+            " ", "+", " ", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q231", "<", "q232"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "3", "]"}], "]"}], "\[Equal]", "1"}], "]"}]}]}], 
+           "]"}], ",", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q241", ">", "q242"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "4", "]"}], "]"}], "\[Equal]", "0"}], "]"}]}], 
+            " ", "+", " ", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q241", "<", "q242"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "4", "]"}], "]"}], "\[Equal]", "1"}], "]"}]}]}], 
+           "]"}]}], "}"}], ",", 
+        RowBox[{
+         RowBox[{"eq11", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q111", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q211", ">", "q212"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"p", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q111", ",", " ", "q112"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q211", "<", "q212"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"t", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q121", ",", " ", "q122"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq12", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q112", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q211", ">", "q212"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"s", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q131", ",", " ", "q132"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q211", "<", "q212"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"r", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q141", ",", " ", "q142"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq13", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q121", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q221", ">", "q222"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"p", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q111", ",", " ", "q112"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q221", "<", "q222"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"t", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q121", ",", " ", "q122"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq14", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q122", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q221", ">", "q222"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"s", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q131", ",", " ", "q132"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q221", "<", "q222"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"r", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q141", ",", " ", "q142"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq15", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q131", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q231", ">", "q232"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"p", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q111", ",", " ", "q112"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q231", "<", "q232"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"t", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q121", ",", " ", "q122"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq16", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q132", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q231", ">", "q232"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"s", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q131", ",", " ", "q132"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q231", "<", "q232"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"r", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q141", ",", " ", "q142"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq17", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q141", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q241", ">", "q242"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"p", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q111", ",", " ", "q112"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q241", "<", "q242"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"t", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q121", ",", " ", "q122"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq18", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q142", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q241", ">", "q242"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"s", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q131", ",", " ", "q132"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q241", "<", "q242"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"r", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q141", ",", " ", "q142"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"sol1", " ", "=", 
+          RowBox[{"NSolve", "[", 
+           RowBox[{
+            RowBox[{"Rationalize", "[", 
+             RowBox[{"{", 
+              RowBox[{
+              "eq11", ",", " ", "eq12", ",", " ", "eq13", ",", " ", "eq14", 
+               ",", " ", "eq15", ",", " ", "eq16", ",", " ", "eq17", ",", " ",
+                "eq18"}], "}"}], "]"}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{
+             "q111", ",", " ", "q112", ",", " ", "q121", ",", " ", "q122", 
+              ",", " ", "q131", ",", " ", "q132", ",", " ", "q141", ",", " ", 
+              "q142"}], "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ">", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "2", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse1", ",", " ", "0"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "<", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "2", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse1", ",", " ", "1"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "3", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ">", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "4", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse1", ",", " ", "0"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "3", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "<", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "4", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse1", ",", " ", "1"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "5", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ">", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "6", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse1", ",", " ", "0"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "5", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "<", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "6", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse1", ",", " ", "1"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "7", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ">", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "8", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse1", ",", " ", "0"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "7", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "<", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol1", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "8", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse1", ",", " ", "1"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"AppendTo", "[", 
+          RowBox[{"player1BR", ",", " ", "bestresponse1"}], "]"}]}]}], 
+       "\[IndentingNewLine]", "]"}], ";", 
+      RowBox[{"Assuming", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q111", ">", "q112"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "\[Equal]", "0"}], "]"}]}], 
+            " ", "+", " ", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q111", "<", "q112"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "\[Equal]", "1"}], "]"}]}]}], 
+           "]"}], ",", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q121", ">", "q122"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "\[Equal]", "0"}], "]"}]}], 
+            " ", "+", " ", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q121", "<", "q122"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "\[Equal]", "1"}], "]"}]}]}], 
+           "]"}], ",", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q131", ">", "q132"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "3", "]"}], "]"}], "\[Equal]", "0"}], "]"}]}], 
+            " ", "+", " ", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q131", "<", "q132"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "3", "]"}], "]"}], "\[Equal]", "1"}], "]"}]}]}], 
+           "]"}], ",", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q141", ">", "q142"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "4", "]"}], "]"}], "\[Equal]", "0"}], "]"}]}], 
+            " ", "+", " ", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"q141", "<", "q142"}], ")"}], 
+             RowBox[{"Boole", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"strategies", "[", 
+                 RowBox[{"[", "n", "]"}], "]"}], "[", 
+                RowBox[{"[", "4", "]"}], "]"}], "\[Equal]", "1"}], "]"}]}]}], 
+           "]"}]}], "}"}], ",", 
+        RowBox[{
+         RowBox[{"eq21", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q211", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q111", ">", "q112"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"p", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q211", ",", " ", "q212"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q111", "<", "q112"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"t", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q231", ",", " ", "q232"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq22", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q212", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q111", ">", "q112"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"s", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q221", ",", " ", "q222"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q111", "<", "q112"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"r", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q241", ",", " ", "q242"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq23", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q221", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q121", ">", "q122"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"p", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q211", ",", " ", "q212"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q121", "<", "q122"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"t", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q231", ",", " ", "q232"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq24", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q222", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q121", ">", "q122"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"s", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q221", ",", " ", "q222"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q121", "<", "q122"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"r", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q241", ",", " ", "q242"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq25", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q231", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q131", ">", "q132"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"p", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q211", ",", " ", "q212"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q131", "<", "q132"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"t", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q231", ",", " ", "q232"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq26", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q232", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q131", ">", "q132"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"s", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q221", ",", " ", "q222"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q131", "<", "q132"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"r", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q241", ",", " ", "q242"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq27", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q241", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q141", ">", "q142"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"p", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q211", ",", " ", "q212"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q141", "<", "q142"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"t", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q231", ",", " ", "q232"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"eq28", " ", "=", " ", 
+          RowBox[{"Simplify", "[", 
+           RowBox[{"q242", "==", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q141", ">", "q142"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"s", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q221", ",", " ", "q222"}], "]"}]}]}], ")"}]}], "+", 
+             RowBox[{
+              RowBox[{"Boole", "[", 
+               RowBox[{"q141", "<", "q142"}], "]"}], 
+              RowBox[{"(", 
+               RowBox[{"r", "+", 
+                RowBox[{"delta", " ", 
+                 RowBox[{"Max", "[", 
+                  RowBox[{"q241", ",", " ", "q242"}], "]"}]}]}], ")"}]}]}]}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"sol2", " ", "=", 
+          RowBox[{"NSolve", "[", 
+           RowBox[{
+            RowBox[{"Rationalize", "[", 
+             RowBox[{"{", 
+              RowBox[{
+              "eq21", ",", " ", "eq22", ",", " ", "eq23", ",", " ", "eq24", 
+               ",", " ", "eq25", ",", " ", "eq26", ",", " ", "eq27", ",", " ",
+                "eq28"}], "}"}], "]"}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{
+             "q211", ",", " ", "q212", ",", " ", "q221", ",", " ", "q222", 
+              ",", " ", "q231", ",", " ", "q232", ",", " ", "q241", ",", " ", 
+              "q242"}], "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ">", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "2", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse2", ",", " ", "0"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "<", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "2", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse2", ",", " ", "1"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "3", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ">", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "4", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse2", ",", " ", "0"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "3", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "<", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "4", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse2", ",", " ", "1"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "5", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ">", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "6", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse2", ",", " ", "0"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "5", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "<", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "6", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse2", ",", " ", "1"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "7", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ">", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "8", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse2", ",", " ", "0"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "7", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "<", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"sol2", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "8", "]"}], "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"bestresponse2", ",", " ", "1"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"AppendTo", "[", 
+          RowBox[{"player2BR", ",", "  ", "bestresponse2"}], "]"}]}]}], 
+       "\[IndentingNewLine]", "]"}]}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"n", ",", " ", "1", ",", " ", "16"}], "}"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]}], "Input",
+ CellChangeTimes->{{3.826955403460293*^9, 3.826955404845295*^9}, {
+   3.826955575779997*^9, 3.826955632466673*^9}, {3.826955692084146*^9, 
+   3.8269560206694717`*^9}, {3.826956056506707*^9, 3.826956065291239*^9}, {
+   3.826956100740459*^9, 3.8269561475526543`*^9}, {3.826956311973117*^9, 
+   3.826956313123431*^9}, {3.826956402272229*^9, 3.826956416714671*^9}, {
+   3.826956493167287*^9, 3.8269566296399527`*^9}, 3.826956662289172*^9, {
+   3.826957023719689*^9, 3.826957024932412*^9}, {3.82695712253273*^9, 
+   3.826957134908751*^9}, {3.826957172228077*^9, 3.82695717410953*^9}, {
+   3.8269572288706293`*^9, 3.8269572306061363`*^9}, {3.826957310134512*^9, 
+   3.8269573249281807`*^9}, {3.8269574171431713`*^9, 3.826957444009763*^9}, {
+   3.8269581902799063`*^9, 3.82695821381686*^9}, {3.826968192984508*^9, 
+   3.826968223678719*^9}, 3.826968332644381*^9, {3.826969290791582*^9, 
+   3.826969291061386*^9}, {3.827202213159171*^9, 3.827202214148367*^9}, {
+   3.827202275382524*^9, 3.8272022757939367`*^9}, {3.827203746778141*^9, 
+   3.827203746928206*^9}, {3.827204040377236*^9, 3.8272040408448477`*^9}, 
+   3.82731559404923*^9, {3.827315673209424*^9, 3.827315675233268*^9}, {
+   3.827315734116448*^9, 3.827315734321355*^9}, 3.827315827787187*^9, {
+   3.827459900356387*^9, 3.827459901314932*^9}, {3.834227736168412*^9, 
+   3.8342277377321997`*^9}, {3.8342282001996317`*^9, 3.834228200290182*^9}, 
+   3.8342282662366257`*^9, {3.834228300243898*^9, 3.834228407212504*^9}, {
+   3.834228490120648*^9, 3.8342285110238457`*^9}, {3.8342285457361317`*^9, 
+   3.834228545810067*^9}, 3.8344603677218227`*^9, {3.83446040948739*^9, 
+   3.834460409588344*^9}, 3.834460495964761*^9, {3.8344605263131647`*^9, 
+   3.834460526625684*^9}, {3.834462186848651*^9, 3.834462199865549*^9}, {
+   3.834544582822502*^9, 3.8345445829512043`*^9}, {3.83454472110928*^9, 
+   3.834544730205056*^9}, {3.834544771450986*^9, 3.834544866496704*^9}, {
+   3.834544905921466*^9, 3.834544949725769*^9}, {3.83454503423492*^9, 
+   3.834545038599497*^9}, {3.834545596243231*^9, 3.8345456296268053`*^9}, {
+   3.835752654040744*^9, 3.8357527098298264`*^9}, {3.835752751676285*^9, 
+   3.835752752329329*^9}, {3.835752782410452*^9, 3.835752808153253*^9}, {
+   3.838878545996526*^9, 3.8388785467019253`*^9}, {3.852779763659143*^9, 
+   3.8527797640415287`*^9}, {3.852779795892972*^9, 3.852779821741796*^9}, {
+   3.852780156196838*^9, 3.852780156470766*^9}, {3.852780233396936*^9, 
+   3.8527802338630247`*^9}},
+ CellLabel->"In[39]:=",ExpressionUUID->"0447b364-9740-4967-a896-2cbc8a71bb2c"],
+
+Cell["\<\
+The following block uses the best-response lists to create an edge list \
+matching strategy pairs that are reached by mutual best-response.\
+\>", "Text",
+ CellChangeTimes->{{3.834545673552642*^9, 
+  3.834545706719943*^9}},ExpressionUUID->"4c3373f1-822a-494c-9f75-\
+dc0ded7989b8"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"BRgraph", "=", 
+   RowBox[{"{", "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pos1", "=", "0"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pos2", "=", "0"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Do", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"player2", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"bitlist", "[", 
+         RowBox[{"[", "n", "]"}], "]"}], "[", 
+        RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"bitlist", "[", 
+         RowBox[{"[", "n", "]"}], "]"}], "[", 
+        RowBox[{"[", "2", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"bitlist", "[", 
+         RowBox[{"[", "n", "]"}], "]"}], "[", 
+        RowBox[{"[", "3", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"bitlist", "[", 
+         RowBox[{"[", "n", "]"}], "]"}], "[", 
+        RowBox[{"[", "4", "]"}], "]"}]}], "}"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"player1", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"bitlist", "[", 
+         RowBox[{"[", "n", "]"}], "]"}], "[", 
+        RowBox[{"[", "5", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"bitlist", "[", 
+         RowBox[{"[", "n", "]"}], "]"}], "[", 
+        RowBox[{"[", "6", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"bitlist", "[", 
+         RowBox[{"[", "n", "]"}], "]"}], "[", 
+        RowBox[{"[", "7", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"bitlist", "[", 
+         RowBox[{"[", "n", "]"}], "]"}], "[", 
+        RowBox[{"[", "8", "]"}], "]"}]}], "}"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"bestresponsevec", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"player1BR", "[", 
+         RowBox[{"[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"strategies", ",", " ", "player1"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+        RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"player1BR", "[", 
+         RowBox[{"[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"strategies", ",", " ", "player1"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+        RowBox[{"[", "2", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"player1BR", "[", 
+         RowBox[{"[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"strategies", ",", " ", "player1"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+        RowBox[{"[", "3", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"player1BR", "[", 
+         RowBox[{"[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"strategies", ",", " ", "player1"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+        RowBox[{"[", "4", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"player2BR", "[", 
+         RowBox[{"[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"strategies", ",", " ", "player2"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+        RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"player2BR", "[", 
+         RowBox[{"[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"strategies", ",", " ", "player2"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+        RowBox[{"[", "2", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"player2BR", "[", 
+         RowBox[{"[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"strategies", ",", " ", "player2"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+        RowBox[{"[", "3", "]"}], "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{"player2BR", "[", 
+         RowBox[{"[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"strategies", ",", " ", "player2"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+        RowBox[{"[", "4", "]"}], "]"}]}], "}"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"BRgraph", ",", " ", 
+      RowBox[{"n", "\[Rule]", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Position", "[", 
+          RowBox[{"bitlist", ",", " ", "bestresponsevec"}], "]"}], "[", 
+         RowBox[{"[", "1", "]"}], "]"}], "[", 
+        RowBox[{"[", "1", "]"}], "]"}]}]}], "]"}]}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"n", ",", " ", "1", ",", " ", "256"}], "}"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.8269579744057407`*^9, 3.82695798219893*^9}, {
+   3.82695802254218*^9, 3.826958175618379*^9}, {3.8269582325198193`*^9, 
+   3.826958340747181*^9}, 3.826958371671446*^9, 3.826959608801422*^9, {
+   3.826962720112713*^9, 3.8269627526491547`*^9}, {3.826963342083041*^9, 
+   3.826963444876596*^9}, {3.826963620113927*^9, 3.826963640774291*^9}, {
+   3.826963795860697*^9, 3.8269638603319683`*^9}, {3.82696390299151*^9, 
+   3.826963941535123*^9}, {3.826963973581623*^9, 3.826964004055088*^9}, {
+   3.8269688814102173`*^9, 3.826968888706327*^9}, {3.834545345583262*^9, 
+   3.83454536899209*^9}},
+ CellLabel->"In[43]:=",ExpressionUUID->"e57cbcb1-50e0-4574-a622-243cf689d0a5"],
+
+Cell["The following line plots the graph.", "Text",
+ CellChangeTimes->{{3.8345457148486557`*^9, 
+  3.834545728821288*^9}},ExpressionUUID->"b9522c92-a670-449e-9b58-\
+063a65c4a59c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"GraphPlot", "[", 
+  RowBox[{"BRgraph", ",", " ", 
+   RowBox[{"VertexLabeling", "\[Rule]", "True"}], ",", " ", 
+   RowBox[{"DirectedEdges", "\[Rule]", "True"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.8269646451194267`*^9, 3.826964655738831*^9}},
+ NumberMarks->False,
+ CellLabel->"In[47]:=",ExpressionUUID->"5e24c0db-080a-4ad6-9cbf-f4ff31a4c454"],
+
+Cell[BoxData[
+ GraphicsBox[
+  TagBox[GraphicsComplexBox[CompressedData["
+1:eJw1l3k81Pv3xz+zfcY6ZSlbG0kJ7YUbnYO0KEVULkkkW0kqcZXSQlIqcmVJ
+KunKUiiFslMqSSqiyF72GcsYxHznfu7vN//M48x73p/P+33e5/16PY+qk9eO
+A3SCIBRoBPHvtxozuVSySwjpu42irXsn4fhPpX6ZbCEsi7tls4VH4qUNYj80
+zIVAS0j9JRggcfGHF/d2dkzBkG49WveR6NJ49+DjgClwtlr70b6LRPZZ9gHT
+mVOQlfDNaGY7iU2fG26Z+kyARvHMmJoyDnrXjSX8mDUBzr8zQoURJEqojc+R
+fM6Fbv6vE2sIacy8OdZIV+FDwo3C67eMWahXt9xpgfUgqCVN62layEC3nGMe
+8UZc6PA2jHYKJlDYeN1VvmMACsYDkyzJKfAyX9/s0jkAGZ6qF/benoRkk8wR
+et8A3PAv2Oq3ZhJOyl699lMwAEbLYXVG1W+Q8Cy1FWdxoXlJ2GEF199w61LF
+a5zOBU7CC9VC4QSoya9YqTiHC+qXlnrmRE+AxwXJHWFLuJDY+sZRfsUEkNu9
+qfWENMkR7e/G4dYZprXpbi608DxX67mMw847R/zOenHhDtO4XpU2DtO/Mj6b
+h3Jh0lQ/JfPWGLjIMIg3/4xDp6PwITObg/1/tFzzo3FBXsJheuR7KbTR+JOf
+9A8XzJRPbBHojUHZHXlG0GsubI6uMSJrBZAekZnV0cUFVwl1Xs8xAQj2OFmV
+cHjg8ut8TK6sAMR4tLfya3gw/eVt6zNZo5BSMPNGrQMP/tkvLmduNQrQ3VlK
+XOFBrFp8zIoRPhjEx0teyePBJLfhNETzIQbPPj3SwwOO365F5w34cNPzj6QH
+cwYhT1OzQqp1BLr3alHn87nJ07YnZAS0H9Zx2i8PwhrX8ns6y0fAUGjnVV8+
+CCHH2zVbG4ZBvmyka4I2BNyNWmsVgodhgXOSvta3MfBzOCcWd4+DrwRi7dPj
++8HtaUT2g2gp9NCMDTHCIfgjZGNrw4phCLx5azwhcAgck5p//dEyBDaKzlFS
+pUNwW2v75/XhQ3AnYKndKfYwuLg6tLFMhuAx/+dgm/kwFOXMlbrMHwTpN7Sn
+ulHDcGoob6w5dRDmffdIPNg8DDwNBwn5/YNQWR584pj2CERpLDdfNmsQVjD1
+/jb2HwFisXmgUR0POqX5KpVvRmB9/WeOVSQPdjUPUPWqpCg57YiVaDzzD9d6
+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
+CfwfpPAgJg==
+    "], {
+     {RGBColor[0.5, 0., 0.], Arrowheads[{{0.02599905141417904, 0.7}}], 
+      ArrowBox[{1, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268,
+        269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 1}], 
+      ArrowBox[{2, 1}], ArrowBox[{3, 1}], ArrowBox[{4, 1}], ArrowBox[{5, 1}], 
+      ArrowBox[{6, 1}], ArrowBox[{7, 8}], ArrowBox[{8, 1}], ArrowBox[{9, 10}],
+       ArrowBox[{10, 1}], ArrowBox[{11, 1}], ArrowBox[{12, 1}], 
+      ArrowBox[{13, 1}], ArrowBox[{14, 1}], ArrowBox[{15, 1}], 
+      ArrowBox[{16, 1}], ArrowBox[{17, 1}], ArrowBox[{18, 1}], 
+      ArrowBox[{19, 1}], ArrowBox[{20, 1}], ArrowBox[{21, 1}], 
+      ArrowBox[{22, 1}], ArrowBox[{23, 1}], ArrowBox[{24, 1}], 
+      ArrowBox[{25, 8}], ArrowBox[{26, 10}], ArrowBox[{27, 1}], 
+      ArrowBox[{28, 1}], ArrowBox[{29, 1}], ArrowBox[{30, 1}], 
+      ArrowBox[{31, 1}], ArrowBox[{32, 1}], ArrowBox[{33, 1}], 
+      ArrowBox[{34, 1}], ArrowBox[{35, 1}], ArrowBox[{36, 1}], 
+      ArrowBox[{37, 1}], ArrowBox[{38, 1}], ArrowBox[{39, 1}], 
+      ArrowBox[{40, 1}], ArrowBox[{41, 8}], ArrowBox[{42, 10}], 
+      ArrowBox[{43, 1}], ArrowBox[{44, 1}], ArrowBox[{45, 1}], 
+      ArrowBox[{46, 1}], ArrowBox[{47, 1}], ArrowBox[{48, 1}], 
+      ArrowBox[{49, 1}], ArrowBox[{50, 1}], ArrowBox[{51, 1}], 
+      ArrowBox[{52, 1}], ArrowBox[{53, 1}], ArrowBox[{54, 1}], 
+      ArrowBox[{55, 1}], ArrowBox[{56, 1}], ArrowBox[{57, 8}], 
+      ArrowBox[{58, 10}], ArrowBox[{59, 1}], ArrowBox[{60, 1}], 
+      ArrowBox[{61, 1}], ArrowBox[{62, 1}], ArrowBox[{63, 1}], 
+      ArrowBox[{64, 1}], ArrowBox[{65, 1}], ArrowBox[{66, 1}], 
+      ArrowBox[{67, 1}], ArrowBox[{68, 1}], ArrowBox[{69, 1}], 
+      ArrowBox[{70, 1}], ArrowBox[{71, 1}], ArrowBox[{72, 1}], 
+      ArrowBox[{73, 8}], ArrowBox[{74, 10}], ArrowBox[{75, 1}], 
+      ArrowBox[{76, 1}], ArrowBox[{77, 1}], ArrowBox[{78, 1}], 
+      ArrowBox[{79, 1}], ArrowBox[{80, 1}], ArrowBox[{81, 1}], 
+      ArrowBox[{82, 1}], ArrowBox[{83, 1}], ArrowBox[{84, 1}], 
+      ArrowBox[{85, 1}], ArrowBox[{86, 1}], ArrowBox[{87, 1}], 
+      ArrowBox[{88, 1}], ArrowBox[{89, 8}], ArrowBox[{90, 10}], 
+      ArrowBox[{91, 1}], ArrowBox[{92, 1}], ArrowBox[{93, 1}], 
+      ArrowBox[{94, 1}], ArrowBox[{95, 1}], ArrowBox[{96, 1}], 
+      ArrowBox[{97, 1}], ArrowBox[{98, 1}], ArrowBox[{99, 12}], 
+      ArrowBox[{100, 12}], ArrowBox[{101, 12}], ArrowBox[{102, 12}], 
+      ArrowBox[{103, 12}], ArrowBox[{104, 12}], ArrowBox[{105, 106}], 
+      ArrowBox[{106, 1}], ArrowBox[{107, 108}], ArrowBox[{108, 1}], 
+      ArrowBox[{109, 12}], ArrowBox[{110, 12}], ArrowBox[{111, 12}], 
+      ArrowBox[{112, 12}], ArrowBox[{113, 12}], ArrowBox[{114, 12}], 
+      ArrowBox[{115, 12}], ArrowBox[{116, 12}], ArrowBox[{117, 11}], 
+      ArrowBox[{118, 11}], ArrowBox[{119, 11}], ArrowBox[{120, 11}], 
+      ArrowBox[{121, 11}], ArrowBox[{122, 11}], ArrowBox[{123, 124}], 
+      ArrowBox[{124, 1}], ArrowBox[{125, 126}], ArrowBox[{126, 1}], 
+      ArrowBox[{127, 11}], ArrowBox[{128, 11}], ArrowBox[{129, 11}], 
+      ArrowBox[{130, 11}], ArrowBox[{131, 11}], ArrowBox[{132, 11}], 
+      ArrowBox[{133, 11}], ArrowBox[{134, 11}], ArrowBox[{135, 1}], 
+      ArrowBox[{136, 1}], ArrowBox[{137, 1}], ArrowBox[{138, 1}], 
+      ArrowBox[{139, 1}], ArrowBox[{140, 8}], ArrowBox[{141, 10}], 
+      ArrowBox[{142, 1}], ArrowBox[{143, 1}], ArrowBox[{144, 1}], 
+      ArrowBox[{145, 1}], ArrowBox[{146, 1}], ArrowBox[{147, 1}], 
+      ArrowBox[{148, 1}], ArrowBox[{149, 1}], ArrowBox[{150, 1}], 
+      ArrowBox[{151, 1}], ArrowBox[{152, 1}], ArrowBox[{153, 8}], 
+      ArrowBox[{154, 10}], ArrowBox[{155, 1}], ArrowBox[{156, 1}], 
+      ArrowBox[{157, 1}], ArrowBox[{158, 1}], ArrowBox[{159, 1}], 
+      ArrowBox[{160, 1}], ArrowBox[{161, 1}], ArrowBox[{162, 1}], 
+      ArrowBox[{163, 1}], ArrowBox[{164, 1}], ArrowBox[{165, 1}], 
+      ArrowBox[{166, 1}], ArrowBox[{167, 8}], ArrowBox[{168, 10}], 
+      ArrowBox[{169, 1}], ArrowBox[{170, 1}], ArrowBox[{171, 1}], 
+      ArrowBox[{172, 1}], ArrowBox[{173, 1}], ArrowBox[{174, 1}], 
+      ArrowBox[{175, 1}], ArrowBox[{176, 1}], ArrowBox[{177, 1}], 
+      ArrowBox[{178, 1}], ArrowBox[{179, 1}], ArrowBox[{180, 1}], 
+      ArrowBox[{181, 1}], ArrowBox[{182, 1}], ArrowBox[{183, 8}], 
+      ArrowBox[{184, 10}], ArrowBox[{185, 1}], ArrowBox[{186, 1}], 
+      ArrowBox[{187, 1}], ArrowBox[{188, 1}], ArrowBox[{189, 1}], 
+      ArrowBox[{190, 1}], ArrowBox[{191, 1}], ArrowBox[{192, 1}], 
+      ArrowBox[{193, 1}], ArrowBox[{194, 1}], ArrowBox[{195, 1}], 
+      ArrowBox[{196, 1}], ArrowBox[{197, 1}], ArrowBox[{198, 1}], 
+      ArrowBox[{199, 8}], ArrowBox[{200, 10}], ArrowBox[{201, 1}], 
+      ArrowBox[{202, 1}], ArrowBox[{203, 1}], ArrowBox[{204, 1}], 
+      ArrowBox[{205, 1}], ArrowBox[{206, 1}], ArrowBox[{207, 1}], 
+      ArrowBox[{208, 1}], ArrowBox[{209, 1}], ArrowBox[{210, 1}], 
+      ArrowBox[{211, 1}], ArrowBox[{212, 1}], ArrowBox[{213, 1}], 
+      ArrowBox[{214, 1}], ArrowBox[{215, 8}], ArrowBox[{216, 10}], 
+      ArrowBox[{217, 1}], ArrowBox[{218, 1}], ArrowBox[{219, 1}], 
+      ArrowBox[{220, 1}], ArrowBox[{221, 1}], ArrowBox[{222, 1}], 
+      ArrowBox[{223, 1}], ArrowBox[{224, 1}], ArrowBox[{225, 1}], 
+      ArrowBox[{226, 1}], ArrowBox[{227, 1}], ArrowBox[{228, 1}], 
+      ArrowBox[{229, 1}], ArrowBox[{230, 1}], ArrowBox[{231, 8}], 
+      ArrowBox[{232, 10}], ArrowBox[{233, 1}], ArrowBox[{234, 1}], 
+      ArrowBox[{235, 1}], ArrowBox[{236, 1}], ArrowBox[{237, 1}], 
+      ArrowBox[{238, 1}], ArrowBox[{239, 1}], ArrowBox[{240, 1}], 
+      ArrowBox[{241, 1}], ArrowBox[{242, 1}], ArrowBox[{243, 1}], 
+      ArrowBox[{244, 1}], ArrowBox[{245, 1}], ArrowBox[{246, 1}], 
+      ArrowBox[{247, 8}], ArrowBox[{248, 10}], ArrowBox[{249, 1}], 
+      ArrowBox[{250, 1}], ArrowBox[{251, 1}], ArrowBox[{252, 1}], 
+      ArrowBox[{253, 1}], ArrowBox[{254, 1}], ArrowBox[{255, 1}], 
+      ArrowBox[{256, 1}]}, {InsetBox[
+       FrameBox["1",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 1], InsetBox[
+       FrameBox["2",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 2], InsetBox[
+       FrameBox["3",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 3], InsetBox[
+       FrameBox["4",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 4], InsetBox[
+       FrameBox["5",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 5], InsetBox[
+       FrameBox["6",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 6], InsetBox[
+       FrameBox["7",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 7], InsetBox[
+       FrameBox["145",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 8], InsetBox[
+       FrameBox["8",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 9], InsetBox[
+       FrameBox["129",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 10], InsetBox[
+       FrameBox["9",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 11], InsetBox[
+       FrameBox["10",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 12], InsetBox[
+       FrameBox["11",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 13], InsetBox[
+       FrameBox["12",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 14], InsetBox[
+       FrameBox["13",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 15], InsetBox[
+       FrameBox["14",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 16], InsetBox[
+       FrameBox["15",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 17], InsetBox[
+       FrameBox["16",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 18], InsetBox[
+       FrameBox["17",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 19], InsetBox[
+       FrameBox["18",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 20], InsetBox[
+       FrameBox["19",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 21], InsetBox[
+       FrameBox["20",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 22], InsetBox[
+       FrameBox["21",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 23], InsetBox[
+       FrameBox["22",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 24], InsetBox[
+       FrameBox["23",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 25], InsetBox[
+       FrameBox["24",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 26], InsetBox[
+       FrameBox["25",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 27], InsetBox[
+       FrameBox["26",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 28], InsetBox[
+       FrameBox["27",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 29], InsetBox[
+       FrameBox["28",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 30], InsetBox[
+       FrameBox["29",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 31], InsetBox[
+       FrameBox["30",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 32], InsetBox[
+       FrameBox["31",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 33], InsetBox[
+       FrameBox["32",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 34], InsetBox[
+       FrameBox["33",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 35], InsetBox[
+       FrameBox["34",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 36], InsetBox[
+       FrameBox["35",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 37], InsetBox[
+       FrameBox["36",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 38], InsetBox[
+       FrameBox["37",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 39], InsetBox[
+       FrameBox["38",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 40], InsetBox[
+       FrameBox["39",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 41], InsetBox[
+       FrameBox["40",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 42], InsetBox[
+       FrameBox["41",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 43], InsetBox[
+       FrameBox["42",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 44], InsetBox[
+       FrameBox["43",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 45], InsetBox[
+       FrameBox["44",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 46], InsetBox[
+       FrameBox["45",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 47], InsetBox[
+       FrameBox["46",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 48], InsetBox[
+       FrameBox["47",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 49], InsetBox[
+       FrameBox["48",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 50], InsetBox[
+       FrameBox["49",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 51], InsetBox[
+       FrameBox["50",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 52], InsetBox[
+       FrameBox["51",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 53], InsetBox[
+       FrameBox["52",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 54], InsetBox[
+       FrameBox["53",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 55], InsetBox[
+       FrameBox["54",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 56], InsetBox[
+       FrameBox["55",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 57], InsetBox[
+       FrameBox["56",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 58], InsetBox[
+       FrameBox["57",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 59], InsetBox[
+       FrameBox["58",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 60], InsetBox[
+       FrameBox["59",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 61], InsetBox[
+       FrameBox["60",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 62], InsetBox[
+       FrameBox["61",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 63], InsetBox[
+       FrameBox["62",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 64], InsetBox[
+       FrameBox["63",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 65], InsetBox[
+       FrameBox["64",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 66], InsetBox[
+       FrameBox["65",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 67], InsetBox[
+       FrameBox["66",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 68], InsetBox[
+       FrameBox["67",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 69], InsetBox[
+       FrameBox["68",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 70], InsetBox[
+       FrameBox["69",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 71], InsetBox[
+       FrameBox["70",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 72], InsetBox[
+       FrameBox["71",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 73], InsetBox[
+       FrameBox["72",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 74], InsetBox[
+       FrameBox["73",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 75], InsetBox[
+       FrameBox["74",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 76], InsetBox[
+       FrameBox["75",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 77], InsetBox[
+       FrameBox["76",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 78], InsetBox[
+       FrameBox["77",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 79], InsetBox[
+       FrameBox["78",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 80], InsetBox[
+       FrameBox["79",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 81], InsetBox[
+       FrameBox["80",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 82], InsetBox[
+       FrameBox["81",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 83], InsetBox[
+       FrameBox["82",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 84], InsetBox[
+       FrameBox["83",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 85], InsetBox[
+       FrameBox["84",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 86], InsetBox[
+       FrameBox["85",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 87], InsetBox[
+       FrameBox["86",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 88], InsetBox[
+       FrameBox["87",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 89], InsetBox[
+       FrameBox["88",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 90], InsetBox[
+       FrameBox["89",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 91], InsetBox[
+       FrameBox["90",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 92], InsetBox[
+       FrameBox["91",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 93], InsetBox[
+       FrameBox["92",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 94], InsetBox[
+       FrameBox["93",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 95], InsetBox[
+       FrameBox["94",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 96], InsetBox[
+       FrameBox["95",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 97], InsetBox[
+       FrameBox["96",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 98], InsetBox[
+       FrameBox["97",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 99], InsetBox[
+       FrameBox["98",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 100], InsetBox[
+       FrameBox["99",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 101], InsetBox[
+       FrameBox["100",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 102], InsetBox[
+       FrameBox["101",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 103], InsetBox[
+       FrameBox["102",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 104], InsetBox[
+       FrameBox["103",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 105], InsetBox[
+       FrameBox["154",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 106], InsetBox[
+       FrameBox["104",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 107], InsetBox[
+       FrameBox["138",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 108], InsetBox[
+       FrameBox["105",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 109], InsetBox[
+       FrameBox["106",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 110], InsetBox[
+       FrameBox["107",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 111], InsetBox[
+       FrameBox["108",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 112], InsetBox[
+       FrameBox["109",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 113], InsetBox[
+       FrameBox["110",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 114], InsetBox[
+       FrameBox["111",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 115], InsetBox[
+       FrameBox["112",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 116], InsetBox[
+       FrameBox["113",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 117], InsetBox[
+       FrameBox["114",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 118], InsetBox[
+       FrameBox["115",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 119], InsetBox[
+       FrameBox["116",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 120], InsetBox[
+       FrameBox["117",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 121], InsetBox[
+       FrameBox["118",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 122], InsetBox[
+       FrameBox["119",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 123], InsetBox[
+       FrameBox["153",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 124], InsetBox[
+       FrameBox["120",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 125], InsetBox[
+       FrameBox["137",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 126], InsetBox[
+       FrameBox["121",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 127], InsetBox[
+       FrameBox["122",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 128], InsetBox[
+       FrameBox["123",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 129], InsetBox[
+       FrameBox["124",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 130], InsetBox[
+       FrameBox["125",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 131], InsetBox[
+       FrameBox["126",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 132], InsetBox[
+       FrameBox["127",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 133], InsetBox[
+       FrameBox["128",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 134], InsetBox[
+       FrameBox["130",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 135], InsetBox[
+       FrameBox["131",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 136], InsetBox[
+       FrameBox["132",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 137], InsetBox[
+       FrameBox["133",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 138], InsetBox[
+       FrameBox["134",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 139], InsetBox[
+       FrameBox["135",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 140], InsetBox[
+       FrameBox["136",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 141], InsetBox[
+       FrameBox["139",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 142], InsetBox[
+       FrameBox["140",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 143], InsetBox[
+       FrameBox["141",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 144], InsetBox[
+       FrameBox["142",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 145], InsetBox[
+       FrameBox["143",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 146], InsetBox[
+       FrameBox["144",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 147], InsetBox[
+       FrameBox["146",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 148], InsetBox[
+       FrameBox["147",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 149], InsetBox[
+       FrameBox["148",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 150], InsetBox[
+       FrameBox["149",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 151], InsetBox[
+       FrameBox["150",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 152], InsetBox[
+       FrameBox["151",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 153], InsetBox[
+       FrameBox["152",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 154], InsetBox[
+       FrameBox["155",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 155], InsetBox[
+       FrameBox["156",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 156], InsetBox[
+       FrameBox["157",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 157], InsetBox[
+       FrameBox["158",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 158], InsetBox[
+       FrameBox["159",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 159], InsetBox[
+       FrameBox["160",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 160], InsetBox[
+       FrameBox["161",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 161], InsetBox[
+       FrameBox["162",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 162], InsetBox[
+       FrameBox["163",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 163], InsetBox[
+       FrameBox["164",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 164], InsetBox[
+       FrameBox["165",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 165], InsetBox[
+       FrameBox["166",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 166], InsetBox[
+       FrameBox["167",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 167], InsetBox[
+       FrameBox["168",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 168], InsetBox[
+       FrameBox["169",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 169], InsetBox[
+       FrameBox["170",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 170], InsetBox[
+       FrameBox["171",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 171], InsetBox[
+       FrameBox["172",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 172], InsetBox[
+       FrameBox["173",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 173], InsetBox[
+       FrameBox["174",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 174], InsetBox[
+       FrameBox["175",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 175], InsetBox[
+       FrameBox["176",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 176], InsetBox[
+       FrameBox["177",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 177], InsetBox[
+       FrameBox["178",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 178], InsetBox[
+       FrameBox["179",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 179], InsetBox[
+       FrameBox["180",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 180], InsetBox[
+       FrameBox["181",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 181], InsetBox[
+       FrameBox["182",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 182], InsetBox[
+       FrameBox["183",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 183], InsetBox[
+       FrameBox["184",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 184], InsetBox[
+       FrameBox["185",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 185], InsetBox[
+       FrameBox["186",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 186], InsetBox[
+       FrameBox["187",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 187], InsetBox[
+       FrameBox["188",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 188], InsetBox[
+       FrameBox["189",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 189], InsetBox[
+       FrameBox["190",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 190], InsetBox[
+       FrameBox["191",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 191], InsetBox[
+       FrameBox["192",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 192], InsetBox[
+       FrameBox["193",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 193], InsetBox[
+       FrameBox["194",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 194], InsetBox[
+       FrameBox["195",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 195], InsetBox[
+       FrameBox["196",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 196], InsetBox[
+       FrameBox["197",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 197], InsetBox[
+       FrameBox["198",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 198], InsetBox[
+       FrameBox["199",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 199], InsetBox[
+       FrameBox["200",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 200], InsetBox[
+       FrameBox["201",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 201], InsetBox[
+       FrameBox["202",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 202], InsetBox[
+       FrameBox["203",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 203], InsetBox[
+       FrameBox["204",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 204], InsetBox[
+       FrameBox["205",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 205], InsetBox[
+       FrameBox["206",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 206], InsetBox[
+       FrameBox["207",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 207], InsetBox[
+       FrameBox["208",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 208], InsetBox[
+       FrameBox["209",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 209], InsetBox[
+       FrameBox["210",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 210], InsetBox[
+       FrameBox["211",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 211], InsetBox[
+       FrameBox["212",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 212], InsetBox[
+       FrameBox["213",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 213], InsetBox[
+       FrameBox["214",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 214], InsetBox[
+       FrameBox["215",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 215], InsetBox[
+       FrameBox["216",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 216], InsetBox[
+       FrameBox["217",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 217], InsetBox[
+       FrameBox["218",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 218], InsetBox[
+       FrameBox["219",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 219], InsetBox[
+       FrameBox["220",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 220], InsetBox[
+       FrameBox["221",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 221], InsetBox[
+       FrameBox["222",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 222], InsetBox[
+       FrameBox["223",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 223], InsetBox[
+       FrameBox["224",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 224], InsetBox[
+       FrameBox["225",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 225], InsetBox[
+       FrameBox["226",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 226], InsetBox[
+       FrameBox["227",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 227], InsetBox[
+       FrameBox["228",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 228], InsetBox[
+       FrameBox["229",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 229], InsetBox[
+       FrameBox["230",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 230], InsetBox[
+       FrameBox["231",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 231], InsetBox[
+       FrameBox["232",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 232], InsetBox[
+       FrameBox["233",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 233], InsetBox[
+       FrameBox["234",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 234], InsetBox[
+       FrameBox["235",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 235], InsetBox[
+       FrameBox["236",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 236], InsetBox[
+       FrameBox["237",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 237], InsetBox[
+       FrameBox["238",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 238], InsetBox[
+       FrameBox["239",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 239], InsetBox[
+       FrameBox["240",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 240], InsetBox[
+       FrameBox["241",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 241], InsetBox[
+       FrameBox["242",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 242], InsetBox[
+       FrameBox["243",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 243], InsetBox[
+       FrameBox["244",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 244], InsetBox[
+       FrameBox["245",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 245], InsetBox[
+       FrameBox["246",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 246], InsetBox[
+       FrameBox["247",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 247], InsetBox[
+       FrameBox["248",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 248], InsetBox[
+       FrameBox["249",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 249], InsetBox[
+       FrameBox["250",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 250], InsetBox[
+       FrameBox["251",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 251], InsetBox[
+       FrameBox["252",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 252], InsetBox[
+       FrameBox["253",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 253], InsetBox[
+       FrameBox["254",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 254], InsetBox[
+       FrameBox["255",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 255], InsetBox[
+       FrameBox["256",
+        Background->RGBColor[1, 1, 0.8],
+        FrameStyle->RGBColor[0.94, 0.85, 0.36],
+        StripOnInput->False], 256]}}],
+   Annotation[#, VertexCoordinateRules -> CompressedData["
+1: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
+93c/rrzMpuACv//q+/8BdKtrCA==
+     "]]& ],
+  AspectRatio->Automatic,
+  FrameTicks->None,
+  ImageSize->{884., Automatic},
+  PlotRange->All,
+  PlotRangePadding->Scaled[0.1]]], "Output",
+ CellChangeTimes->{
+  3.826964010238307*^9, 3.826964656223035*^9, 3.8269688942351*^9, 
+   3.826969328950644*^9, 3.827202234354508*^9, 3.827202299911311*^9, 
+   3.8272037630664177`*^9, 3.827204050697515*^9, 3.8273156372091*^9, 
+   3.8273156896184883`*^9, 3.827315742703142*^9, 3.8273158402240887`*^9, 
+   3.8342276843980017`*^9, 3.834227759637121*^9, 3.834227929458804*^9, 
+   3.834228223557914*^9, 3.834228277877677*^9, {3.834228313149485*^9, 
+   3.834228337448008*^9}, {3.8342283704916487`*^9, 3.834228414971492*^9}, {
+   3.834228497157515*^9, 3.834228522117193*^9}, 3.834228555989472*^9, 
+   3.834460294585329*^9, 3.834460391570861*^9, {3.8344605054986362`*^9, 
+   3.834460533177433*^9}, 3.83446221701963*^9, 3.834545456582885*^9, 
+   3.8345456229169693`*^9, 3.834545721882143*^9, 3.834551234346614*^9, 
+   3.835752673207343*^9, 3.835752718650416*^9, 3.8357527620276537`*^9, {
+   3.8357527939101257`*^9, 3.83575281708204*^9}, 3.838878558578579*^9, 
+   3.8527797738577414`*^9, {3.852779806999757*^9, 3.852779830565789*^9}, 
+   3.852780165058672*^9, 3.8527802451119013`*^9},
+ CellLabel->"Out[47]=",ExpressionUUID->"b5406ad2-fcba-4576-b8f9-4f296575f977"]
+}, Open  ]],
+
+Cell["The edge list can be printed by executing the following.", "Text",
+ CellChangeTimes->{{3.8345457540567303`*^9, 
+  3.834545775328451*^9}},ExpressionUUID->"f0d3053e-702f-4ca3-962f-\
+d5ecd9d09c06"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["BRgraph"], "Input",
+ CellChangeTimes->{{3.8345457787230883`*^9, 3.834545779531742*^9}},
+ CellLabel->"In[12]:=",ExpressionUUID->"177991fa-506a-46e8-bb39-f861667a9e06"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"1", "\[Rule]", "1"}], ",", 
+   RowBox[{"2", "\[Rule]", "1"}], ",", 
+   RowBox[{"3", "\[Rule]", "1"}], ",", 
+   RowBox[{"4", "\[Rule]", "1"}], ",", 
+   RowBox[{"5", "\[Rule]", "1"}], ",", 
+   RowBox[{"6", "\[Rule]", "1"}], ",", 
+   RowBox[{"7", "\[Rule]", "145"}], ",", 
+   RowBox[{"8", "\[Rule]", "129"}], ",", 
+   RowBox[{"9", "\[Rule]", "1"}], ",", 
+   RowBox[{"10", "\[Rule]", "1"}], ",", 
+   RowBox[{"11", "\[Rule]", "1"}], ",", 
+   RowBox[{"12", "\[Rule]", "1"}], ",", 
+   RowBox[{"13", "\[Rule]", "1"}], ",", 
+   RowBox[{"14", "\[Rule]", "1"}], ",", 
+   RowBox[{"15", "\[Rule]", "1"}], ",", 
+   RowBox[{"16", "\[Rule]", "1"}], ",", 
+   RowBox[{"17", "\[Rule]", "1"}], ",", 
+   RowBox[{"18", "\[Rule]", "1"}], ",", 
+   RowBox[{"19", "\[Rule]", "1"}], ",", 
+   RowBox[{"20", "\[Rule]", "1"}], ",", 
+   RowBox[{"21", "\[Rule]", "1"}], ",", 
+   RowBox[{"22", "\[Rule]", "1"}], ",", 
+   RowBox[{"23", "\[Rule]", "145"}], ",", 
+   RowBox[{"24", "\[Rule]", "129"}], ",", 
+   RowBox[{"25", "\[Rule]", "1"}], ",", 
+   RowBox[{"26", "\[Rule]", "1"}], ",", 
+   RowBox[{"27", "\[Rule]", "1"}], ",", 
+   RowBox[{"28", "\[Rule]", "1"}], ",", 
+   RowBox[{"29", "\[Rule]", "1"}], ",", 
+   RowBox[{"30", "\[Rule]", "1"}], ",", 
+   RowBox[{"31", "\[Rule]", "1"}], ",", 
+   RowBox[{"32", "\[Rule]", "1"}], ",", 
+   RowBox[{"33", "\[Rule]", "1"}], ",", 
+   RowBox[{"34", "\[Rule]", "1"}], ",", 
+   RowBox[{"35", "\[Rule]", "1"}], ",", 
+   RowBox[{"36", "\[Rule]", "1"}], ",", 
+   RowBox[{"37", "\[Rule]", "1"}], ",", 
+   RowBox[{"38", "\[Rule]", "1"}], ",", 
+   RowBox[{"39", "\[Rule]", "145"}], ",", 
+   RowBox[{"40", "\[Rule]", "129"}], ",", 
+   RowBox[{"41", "\[Rule]", "1"}], ",", 
+   RowBox[{"42", "\[Rule]", "1"}], ",", 
+   RowBox[{"43", "\[Rule]", "1"}], ",", 
+   RowBox[{"44", "\[Rule]", "1"}], ",", 
+   RowBox[{"45", "\[Rule]", "1"}], ",", 
+   RowBox[{"46", "\[Rule]", "1"}], ",", 
+   RowBox[{"47", "\[Rule]", "1"}], ",", 
+   RowBox[{"48", "\[Rule]", "1"}], ",", 
+   RowBox[{"49", "\[Rule]", "1"}], ",", 
+   RowBox[{"50", "\[Rule]", "1"}], ",", 
+   RowBox[{"51", "\[Rule]", "1"}], ",", 
+   RowBox[{"52", "\[Rule]", "1"}], ",", 
+   RowBox[{"53", "\[Rule]", "1"}], ",", 
+   RowBox[{"54", "\[Rule]", "1"}], ",", 
+   RowBox[{"55", "\[Rule]", "145"}], ",", 
+   RowBox[{"56", "\[Rule]", "129"}], ",", 
+   RowBox[{"57", "\[Rule]", "1"}], ",", 
+   RowBox[{"58", "\[Rule]", "1"}], ",", 
+   RowBox[{"59", "\[Rule]", "1"}], ",", 
+   RowBox[{"60", "\[Rule]", "1"}], ",", 
+   RowBox[{"61", "\[Rule]", "1"}], ",", 
+   RowBox[{"62", "\[Rule]", "1"}], ",", 
+   RowBox[{"63", "\[Rule]", "1"}], ",", 
+   RowBox[{"64", "\[Rule]", "1"}], ",", 
+   RowBox[{"65", "\[Rule]", "1"}], ",", 
+   RowBox[{"66", "\[Rule]", "1"}], ",", 
+   RowBox[{"67", "\[Rule]", "1"}], ",", 
+   RowBox[{"68", "\[Rule]", "1"}], ",", 
+   RowBox[{"69", "\[Rule]", "1"}], ",", 
+   RowBox[{"70", "\[Rule]", "1"}], ",", 
+   RowBox[{"71", "\[Rule]", "145"}], ",", 
+   RowBox[{"72", "\[Rule]", "129"}], ",", 
+   RowBox[{"73", "\[Rule]", "1"}], ",", 
+   RowBox[{"74", "\[Rule]", "1"}], ",", 
+   RowBox[{"75", "\[Rule]", "1"}], ",", 
+   RowBox[{"76", "\[Rule]", "1"}], ",", 
+   RowBox[{"77", "\[Rule]", "1"}], ",", 
+   RowBox[{"78", "\[Rule]", "1"}], ",", 
+   RowBox[{"79", "\[Rule]", "1"}], ",", 
+   RowBox[{"80", "\[Rule]", "1"}], ",", 
+   RowBox[{"81", "\[Rule]", "1"}], ",", 
+   RowBox[{"82", "\[Rule]", "1"}], ",", 
+   RowBox[{"83", "\[Rule]", "1"}], ",", 
+   RowBox[{"84", "\[Rule]", "1"}], ",", 
+   RowBox[{"85", "\[Rule]", "1"}], ",", 
+   RowBox[{"86", "\[Rule]", "1"}], ",", 
+   RowBox[{"87", "\[Rule]", "145"}], ",", 
+   RowBox[{"88", "\[Rule]", "129"}], ",", 
+   RowBox[{"89", "\[Rule]", "1"}], ",", 
+   RowBox[{"90", "\[Rule]", "1"}], ",", 
+   RowBox[{"91", "\[Rule]", "1"}], ",", 
+   RowBox[{"92", "\[Rule]", "1"}], ",", 
+   RowBox[{"93", "\[Rule]", "1"}], ",", 
+   RowBox[{"94", "\[Rule]", "1"}], ",", 
+   RowBox[{"95", "\[Rule]", "1"}], ",", 
+   RowBox[{"96", "\[Rule]", "1"}], ",", 
+   RowBox[{"97", "\[Rule]", "10"}], ",", 
+   RowBox[{"98", "\[Rule]", "10"}], ",", 
+   RowBox[{"99", "\[Rule]", "10"}], ",", 
+   RowBox[{"100", "\[Rule]", "10"}], ",", 
+   RowBox[{"101", "\[Rule]", "10"}], ",", 
+   RowBox[{"102", "\[Rule]", "10"}], ",", 
+   RowBox[{"103", "\[Rule]", "154"}], ",", 
+   RowBox[{"104", "\[Rule]", "138"}], ",", 
+   RowBox[{"105", "\[Rule]", "10"}], ",", 
+   RowBox[{"106", "\[Rule]", "10"}], ",", 
+   RowBox[{"107", "\[Rule]", "10"}], ",", 
+   RowBox[{"108", "\[Rule]", "10"}], ",", 
+   RowBox[{"109", "\[Rule]", "10"}], ",", 
+   RowBox[{"110", "\[Rule]", "10"}], ",", 
+   RowBox[{"111", "\[Rule]", "10"}], ",", 
+   RowBox[{"112", "\[Rule]", "10"}], ",", 
+   RowBox[{"113", "\[Rule]", "9"}], ",", 
+   RowBox[{"114", "\[Rule]", "9"}], ",", 
+   RowBox[{"115", "\[Rule]", "9"}], ",", 
+   RowBox[{"116", "\[Rule]", "9"}], ",", 
+   RowBox[{"117", "\[Rule]", "9"}], ",", 
+   RowBox[{"118", "\[Rule]", "9"}], ",", 
+   RowBox[{"119", "\[Rule]", "153"}], ",", 
+   RowBox[{"120", "\[Rule]", "137"}], ",", 
+   RowBox[{"121", "\[Rule]", "9"}], ",", 
+   RowBox[{"122", "\[Rule]", "9"}], ",", 
+   RowBox[{"123", "\[Rule]", "9"}], ",", 
+   RowBox[{"124", "\[Rule]", "9"}], ",", 
+   RowBox[{"125", "\[Rule]", "9"}], ",", 
+   RowBox[{"126", "\[Rule]", "9"}], ",", 
+   RowBox[{"127", "\[Rule]", "9"}], ",", 
+   RowBox[{"128", "\[Rule]", "9"}], ",", 
+   RowBox[{"129", "\[Rule]", "1"}], ",", 
+   RowBox[{"130", "\[Rule]", "1"}], ",", 
+   RowBox[{"131", "\[Rule]", "1"}], ",", 
+   RowBox[{"132", "\[Rule]", "1"}], ",", 
+   RowBox[{"133", "\[Rule]", "1"}], ",", 
+   RowBox[{"134", "\[Rule]", "1"}], ",", 
+   RowBox[{"135", "\[Rule]", "145"}], ",", 
+   RowBox[{"136", "\[Rule]", "129"}], ",", 
+   RowBox[{"137", "\[Rule]", "1"}], ",", 
+   RowBox[{"138", "\[Rule]", "1"}], ",", 
+   RowBox[{"139", "\[Rule]", "1"}], ",", 
+   RowBox[{"140", "\[Rule]", "1"}], ",", 
+   RowBox[{"141", "\[Rule]", "1"}], ",", 
+   RowBox[{"142", "\[Rule]", "1"}], ",", 
+   RowBox[{"143", "\[Rule]", "1"}], ",", 
+   RowBox[{"144", "\[Rule]", "1"}], ",", 
+   RowBox[{"145", "\[Rule]", "1"}], ",", 
+   RowBox[{"146", "\[Rule]", "1"}], ",", 
+   RowBox[{"147", "\[Rule]", "1"}], ",", 
+   RowBox[{"148", "\[Rule]", "1"}], ",", 
+   RowBox[{"149", "\[Rule]", "1"}], ",", 
+   RowBox[{"150", "\[Rule]", "1"}], ",", 
+   RowBox[{"151", "\[Rule]", "145"}], ",", 
+   RowBox[{"152", "\[Rule]", "129"}], ",", 
+   RowBox[{"153", "\[Rule]", "1"}], ",", 
+   RowBox[{"154", "\[Rule]", "1"}], ",", 
+   RowBox[{"155", "\[Rule]", "1"}], ",", 
+   RowBox[{"156", "\[Rule]", "1"}], ",", 
+   RowBox[{"157", "\[Rule]", "1"}], ",", 
+   RowBox[{"158", "\[Rule]", "1"}], ",", 
+   RowBox[{"159", "\[Rule]", "1"}], ",", 
+   RowBox[{"160", "\[Rule]", "1"}], ",", 
+   RowBox[{"161", "\[Rule]", "1"}], ",", 
+   RowBox[{"162", "\[Rule]", "1"}], ",", 
+   RowBox[{"163", "\[Rule]", "1"}], ",", 
+   RowBox[{"164", "\[Rule]", "1"}], ",", 
+   RowBox[{"165", "\[Rule]", "1"}], ",", 
+   RowBox[{"166", "\[Rule]", "1"}], ",", 
+   RowBox[{"167", "\[Rule]", "145"}], ",", 
+   RowBox[{"168", "\[Rule]", "129"}], ",", 
+   RowBox[{"169", "\[Rule]", "1"}], ",", 
+   RowBox[{"170", "\[Rule]", "1"}], ",", 
+   RowBox[{"171", "\[Rule]", "1"}], ",", 
+   RowBox[{"172", "\[Rule]", "1"}], ",", 
+   RowBox[{"173", "\[Rule]", "1"}], ",", 
+   RowBox[{"174", "\[Rule]", "1"}], ",", 
+   RowBox[{"175", "\[Rule]", "1"}], ",", 
+   RowBox[{"176", "\[Rule]", "1"}], ",", 
+   RowBox[{"177", "\[Rule]", "1"}], ",", 
+   RowBox[{"178", "\[Rule]", "1"}], ",", 
+   RowBox[{"179", "\[Rule]", "1"}], ",", 
+   RowBox[{"180", "\[Rule]", "1"}], ",", 
+   RowBox[{"181", "\[Rule]", "1"}], ",", 
+   RowBox[{"182", "\[Rule]", "1"}], ",", 
+   RowBox[{"183", "\[Rule]", "145"}], ",", 
+   RowBox[{"184", "\[Rule]", "129"}], ",", 
+   RowBox[{"185", "\[Rule]", "1"}], ",", 
+   RowBox[{"186", "\[Rule]", "1"}], ",", 
+   RowBox[{"187", "\[Rule]", "1"}], ",", 
+   RowBox[{"188", "\[Rule]", "1"}], ",", 
+   RowBox[{"189", "\[Rule]", "1"}], ",", 
+   RowBox[{"190", "\[Rule]", "1"}], ",", 
+   RowBox[{"191", "\[Rule]", "1"}], ",", 
+   RowBox[{"192", "\[Rule]", "1"}], ",", 
+   RowBox[{"193", "\[Rule]", "1"}], ",", 
+   RowBox[{"194", "\[Rule]", "1"}], ",", 
+   RowBox[{"195", "\[Rule]", "1"}], ",", 
+   RowBox[{"196", "\[Rule]", "1"}], ",", 
+   RowBox[{"197", "\[Rule]", "1"}], ",", 
+   RowBox[{"198", "\[Rule]", "1"}], ",", 
+   RowBox[{"199", "\[Rule]", "145"}], ",", 
+   RowBox[{"200", "\[Rule]", "129"}], ",", 
+   RowBox[{"201", "\[Rule]", "1"}], ",", 
+   RowBox[{"202", "\[Rule]", "1"}], ",", 
+   RowBox[{"203", "\[Rule]", "1"}], ",", 
+   RowBox[{"204", "\[Rule]", "1"}], ",", 
+   RowBox[{"205", "\[Rule]", "1"}], ",", 
+   RowBox[{"206", "\[Rule]", "1"}], ",", 
+   RowBox[{"207", "\[Rule]", "1"}], ",", 
+   RowBox[{"208", "\[Rule]", "1"}], ",", 
+   RowBox[{"209", "\[Rule]", "1"}], ",", 
+   RowBox[{"210", "\[Rule]", "1"}], ",", 
+   RowBox[{"211", "\[Rule]", "1"}], ",", 
+   RowBox[{"212", "\[Rule]", "1"}], ",", 
+   RowBox[{"213", "\[Rule]", "1"}], ",", 
+   RowBox[{"214", "\[Rule]", "1"}], ",", 
+   RowBox[{"215", "\[Rule]", "145"}], ",", 
+   RowBox[{"216", "\[Rule]", "129"}], ",", 
+   RowBox[{"217", "\[Rule]", "1"}], ",", 
+   RowBox[{"218", "\[Rule]", "1"}], ",", 
+   RowBox[{"219", "\[Rule]", "1"}], ",", 
+   RowBox[{"220", "\[Rule]", "1"}], ",", 
+   RowBox[{"221", "\[Rule]", "1"}], ",", 
+   RowBox[{"222", "\[Rule]", "1"}], ",", 
+   RowBox[{"223", "\[Rule]", "1"}], ",", 
+   RowBox[{"224", "\[Rule]", "1"}], ",", 
+   RowBox[{"225", "\[Rule]", "1"}], ",", 
+   RowBox[{"226", "\[Rule]", "1"}], ",", 
+   RowBox[{"227", "\[Rule]", "1"}], ",", 
+   RowBox[{"228", "\[Rule]", "1"}], ",", 
+   RowBox[{"229", "\[Rule]", "1"}], ",", 
+   RowBox[{"230", "\[Rule]", "1"}], ",", 
+   RowBox[{"231", "\[Rule]", "145"}], ",", 
+   RowBox[{"232", "\[Rule]", "129"}], ",", 
+   RowBox[{"233", "\[Rule]", "1"}], ",", 
+   RowBox[{"234", "\[Rule]", "1"}], ",", 
+   RowBox[{"235", "\[Rule]", "1"}], ",", 
+   RowBox[{"236", "\[Rule]", "1"}], ",", 
+   RowBox[{"237", "\[Rule]", "1"}], ",", 
+   RowBox[{"238", "\[Rule]", "1"}], ",", 
+   RowBox[{"239", "\[Rule]", "1"}], ",", 
+   RowBox[{"240", "\[Rule]", "1"}], ",", 
+   RowBox[{"241", "\[Rule]", "1"}], ",", 
+   RowBox[{"242", "\[Rule]", "1"}], ",", 
+   RowBox[{"243", "\[Rule]", "1"}], ",", 
+   RowBox[{"244", "\[Rule]", "1"}], ",", 
+   RowBox[{"245", "\[Rule]", "1"}], ",", 
+   RowBox[{"246", "\[Rule]", "1"}], ",", 
+   RowBox[{"247", "\[Rule]", "145"}], ",", 
+   RowBox[{"248", "\[Rule]", "129"}], ",", 
+   RowBox[{"249", "\[Rule]", "1"}], ",", 
+   RowBox[{"250", "\[Rule]", "1"}], ",", 
+   RowBox[{"251", "\[Rule]", "1"}], ",", 
+   RowBox[{"252", "\[Rule]", "1"}], ",", 
+   RowBox[{"253", "\[Rule]", "1"}], ",", 
+   RowBox[{"254", "\[Rule]", "1"}], ",", 
+   RowBox[{"255", "\[Rule]", "1"}], ",", 
+   RowBox[{"256", "\[Rule]", "1"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.834545779803985*^9, 3.8345512423053827`*^9},
+ CellLabel->"Out[12]=",ExpressionUUID->"37aa8779-0ef4-40cf-a45c-bd3ac91b060b"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1853, 1025},
+WindowMargins->{{Automatic, 0}, {0, Automatic}},
+FrontEndVersion->"11.3 for Linux x86 (64-bit) (March 6, 2018)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 224, 4, 98, "Title",ExpressionUUID->"9a192653-bfd8-4724-996c-e7a80331f759"],
+Cell[807, 28, 236, 6, 35, "Text",ExpressionUUID->"277f43aa-5d1a-46d7-ae8c-f0b4baddd4c9"],
+Cell[1046, 36, 1381, 36, 78, "Input",ExpressionUUID->"a923fd40-dfb4-479b-8f86-6a49e83d2bc3"],
+Cell[2430, 74, 574, 10, 35, "Text",ExpressionUUID->"a4f0a322-0c1d-4a02-91b5-a57967bf3386"],
+Cell[3007, 86, 38373, 957, 1205, "Input",ExpressionUUID->"0447b364-9740-4967-a896-2cbc8a71bb2c"],
+Cell[41383, 1045, 289, 6, 35, "Text",ExpressionUUID->"4c3373f1-822a-494c-9f75-dc0ded7989b8"],
+Cell[41675, 1053, 6009, 152, 239, "Input",ExpressionUUID->"e57cbcb1-50e0-4574-a622-243cf689d0a5"],
+Cell[47687, 1207, 179, 3, 35, "Text",ExpressionUUID->"b9522c92-a670-449e-9b58-063a65c4a59c"],
+Cell[CellGroupData[{
+Cell[47891, 1214, 370, 7, 31, "Input",ExpressionUUID->"5e24c0db-080a-4ad6-9cbf-f4ff31a4c454"],
+Cell[48264, 1223, 58326, 1317, 1153, "Output",ExpressionUUID->"b5406ad2-fcba-4576-b8f9-4f296575f977"]
+}, Open  ]],
+Cell[106605, 2543, 200, 3, 35, "Text",ExpressionUUID->"f0d3053e-702f-4ca3-962f-d5ecd9d09c06"],
+Cell[CellGroupData[{
+Cell[106830, 2550, 180, 2, 31, "Input",ExpressionUUID->"177991fa-506a-46e8-bb39-f861667a9e06"],
+Cell[107013, 2554, 10920, 260, 266, "Output",ExpressionUUID->"37aa8779-0ef4-40cf-a45c-bd3ac91b060b"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
