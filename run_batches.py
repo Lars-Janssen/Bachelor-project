@@ -31,13 +31,6 @@ p2 = [0, 0, 0, 1]
 e = 0.1 / (2 ** doubles)
 d = 0
 
-# Interval of deltas in which we find the best counter-strategy.
-start = 0
-end = 100
-
-# How many (equally spaced) points we check in the interval.
-steps = 10
-
 
 def dectobin(number):
     """Converts a decimal number to a list of binary numbers of length 4."""
@@ -53,7 +46,7 @@ def test_delta(delta):
 
 
 class counterstrats:
-    def __init__(self):
+    def __init__(self, start, end, steps):
         # Make a list of the deltas to check.
         self.deltas = [(start + (end - start) * i / steps) /
                        100 for i in range(steps)]
@@ -96,11 +89,11 @@ class counterstrats:
         plt.ylim(0, iterations + iterations / 10)
         plt.axvline(x=1 / 3, ymin=0, ymax=iterations, color='orange')
         plt.title(str(batch_size))
-        # plt.show()
+        plt.show()
         plt.savefig('Approx/' + str(batch_size) + '.png')
 
 
 if __name__ == '__main__':
-    counterstat = counterstrats()
+    counterstat = counterstrats(0, 100, 10)
     counterstat.get_data()
     counterstat.print_and_plot()
