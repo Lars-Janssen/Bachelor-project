@@ -1,0 +1,71 @@
+assumptions = {
+                  If[input[[1]] == 0, Q1000 > Q1001, Q1000 < Q1001],
+                  If[input[[2]] == 0, Q1010 > Q1011, Q1010 < Q1011],
+                  If[input[[3]] == 0, Q1100 > Q1101, Q1100 < Q1101],
+                  If[input[[4]] == 0, Q1110 > Q1111, Q1110 < Q1111],
+                  If[strat[[1]] == 0, Q2000 > Q2001, Q2000 < Q2001],
+                  If[strat[[2]] == 0, Q2010 > Q2011, Q2010 < Q2011],
+                  If[strat[[3]] == 0, Q2100 > Q2101, Q2100 < Q2101],
+                  If[strat[[4]] == 0, Q2110 > Q2111, Q2110 < Q2111],
+                  t > r > p > s, 2 r > t + s, 0 < d < 1};
+
+  Assuming[assumptions,
+   {q1 = Simplify[
+      Boole[Q1000 > Q1001] (p + d*Q2000*Boole[Q2000 > Q2001] +
+          d*Q2001*Boole[Q2000 < Q2001]) +
+
+       Boole[Q1000 < Q1001] (t + d*Q2010*Boole[Q2010 > Q2011] +
+          d*Q2011*Boole[Q2010 < Q2011])],
+    q2 =
+     Simplify[
+      Boole[Q1000 > Q1001] (s + d*Q2100*Boole[Q2100 > Q2101] +
+          d*Q2101*Boole[Q2100 < Q2101]) +
+
+       Boole[Q1000 < Q1001] (r + d*Q2110*Boole[Q2110 > Q2111] +
+          d*Q2111*Boole[Q2110 < Q2111])],
+    q3 =
+     Simplify[
+      Boole[Q1010 > Q1011] (p + d*Q2000*Boole[Q2000 > Q2001] +
+          d*Q2001*Boole[Q2000 < Q2001]) +
+
+       Boole[Q1010 < Q1011] (t + d*Q2010*Boole[Q2010 > Q2011] +
+          d*Q2011*Boole[Q2010 < Q2011])],
+    q4 =
+     Simplify[
+      Boole[Q1010 > Q1011] (s + d*Q2100*Boole[Q2100 > Q2101] +
+          d*Q2101*Boole[Q2100 < Q2101]) +
+
+       Boole[Q1010 < Q1011] (r + d*Q2110*Boole[Q2110 > Q2111] +
+          d*Q2111*Boole[Q2110 < Q2111])],
+    q5 =
+     Simplify[
+      Boole[Q1100 > Q1101] (p + d*Q2000*Boole[Q2000 > Q2001] +
+          d*Q2001*Boole[Q2000 < Q2001]) +
+
+       Boole[Q1100 < Q1101] (t + d*Q2010*Boole[Q2010 > Q2011] +
+          d*Q2011*Boole[Q2010 < Q2011])],
+    q6 =
+     Simplify[
+      Boole[Q1100 > Q1101] (s + d*Q2100*Boole[Q2100 > Q2101] +
+          d*Q2101*Boole[Q2100 < Q2101]) +
+
+       Boole[Q1100 < Q1101] (r + d*Q2110*Boole[Q2110 > Q2111] +
+          d*Q2111*Boole[Q2110 < Q2111])],
+    q7 =
+     Simplify[
+      Boole[Q1110 > Q1111] (p + d*Q2000*Boole[Q2000 > Q2001] +
+          d*Q2001*Boole[Q2000 < Q2001]) +
+
+       Boole[Q1110 < Q1111] (t + d*Q2010*Boole[Q2010 > Q2011] +
+          d*Q2011*Boole[Q2010 < Q2011])],
+    q8 =
+     Simplify[
+      Boole[Q1110 > Q1111] (s + d*Q2100*Boole[Q2100 > Q2101] +
+          d*Q2101*Boole[Q2100 < Q2101]) +
+
+       Boole[Q1110 < Q1111] (r + d*Q2110*Boole[Q2110 > Q2111] +
+          d*Q2111*Boole[Q2110 < Q2111])]
+    }];
+  sol1 = Solve[{q1 == Q2000, q2 == Q2001, q3 == Q2010, q4 == Q2011,
+     q5 == Q2100, q6 == Q2101, q7 == Q2110, q8 == Q2111}, {Q2000,
+     Q2001, Q2010, Q2011, Q2100, Q2101, Q2110, Q2111}];

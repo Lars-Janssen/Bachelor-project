@@ -1,0 +1,143 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      4866,        136]
+NotebookOptionsPosition[      4333,        120]
+NotebookOutlinePosition[      4725,        136]
+CellTagsIndexPosition[      4682,        133]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"players", " ", "=", " ", "2"}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"actions", " ", "=", " ", "2"}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rewards", " ", "=", " ",
+   RowBox[{"{",
+    RowBox[{"t", ",", "r", ",", "p", ",", "s"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"d", " ", "=", " ",
+   RowBox[{"6", "/", "10"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.8568583060082827`*^9, 3.8568583451900377`*^9}, {
+  3.856859363854521*^9,
+  3.856859368763893*^9}},ExpressionUUID->"649ed2be-2e44-48d8-ba4e-\
+19fe4dd2818e"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"dectobin", "[", "n_", "]"}], ":=", "\[IndentingNewLine]",
+   RowBox[{"Module", "[",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"number", " ", "=", " ", "n"}], "}"}], ",",
+     RowBox[{"Join", "[",
+      RowBox[{
+       RowBox[{"ConstantArray", "[",
+        RowBox[{"0", ",",
+         RowBox[{
+          RowBox[{"(",
+           RowBox[{"actions", "^", "players"}], ")"}], "-",
+          RowBox[{"Length", "[",
+           RowBox[{"IntegerDigits", "[",
+            RowBox[{"number", ",", "2"}], "]"}], "]"}]}]}], "]"}], ",",
+       RowBox[{"IntegerDigits", "[",
+        RowBox[{"number", ",", "2"}], "]"}]}], "]"}]}], "\[IndentingNewLine]",
+     "]"}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"get_best",
+   RowBox[{"_action", "[",
+    RowBox[{"p2_", ",", " ", "start_"}], "]"}]}], ":=", "\[IndentingNewLine]",
+  RowBox[{"Module", "[",
+   RowBox[{"{", "}"}], "]"}]}]}], "Input",
+ CellChangeTimes->{{3.856858363978293*^9, 3.8568584503878508`*^9}, {
+  3.8568584855435333`*^9, 3.856858588591093*^9}, {3.856859608588113*^9,
+  3.856859646206643*^9}},ExpressionUUID->"f7c5cf11-c8a4-4ea2-9cca-\
+6f842879dcce"],
+
+Cell[BoxData[
+ RowBox[{"Do", "[", "\[IndentingNewLine]",
+  RowBox[{
+   RowBox[{
+    RowBox[{"p2", " ", "=", " ",
+     RowBox[{"dectobin",
+      RowBox[{"(", "s2", ")"}]}]}], ";", "\[IndentingNewLine]",
+    RowBox[{"counter", " ", "=", " ",
+     RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+
+    RowBox[{"Do", "[", "\[IndentingNewLine]",
+     RowBox[{
+      RowBox[{
+       RowBox[{"amounts", " ", "=", " ",
+        RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+       RowBox[{"get_best",
+        RowBox[{"_action", "[",
+         RowBox[{"p2", ",", " ", "start"}], "]"}]}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"Do", "[", "\[IndentingNewLine]",
+        RowBox[{
+         RowBox[{
+          RowBox[{"get_best",
+           RowBox[{"_action", "[",
+            RowBox[{"s2", ",", " ", "s1", ",", " ", "start"}], "]"}]}], ";"}],
+          "\[IndentingNewLine]", "\[IndentingNewLine]", ",",
+         RowBox[{"{",
+          RowBox[{"s1", ",", "0", ",",
+           RowBox[{"actions", "^",
+            RowBox[{"(",
+             RowBox[{"actions", "^", "players"}], ")"}]}]}], "}"}]}], "]"}]}],
+       "\[IndentingNewLine]", ",",
+      RowBox[{"{",
+       RowBox[{"start", ",", "1", ",",
+        RowBox[{"actions", "^", "players"}]}], "}"}]}], "]"}]}],
+   "\[IndentingNewLine]", ",",
+   RowBox[{"{",
+    RowBox[{"s2", ",", "0", ",",
+     RowBox[{"actions", "^",
+      RowBox[{"(",
+       RowBox[{"actions", "^", "players"}], ")"}]}]}], "}"}]}],
+  "]"}]], "Input",
+ CellChangeTimes->{{3.856858596495967*^9, 3.8568585969488363`*^9}, {
+  3.856858651819384*^9, 3.856858707625827*^9}, {3.8568588174603367`*^9,
+  3.856858862397587*^9}, {3.8568589307569733`*^9, 3.8568589822218733`*^9}, {
+  3.8568591820218887`*^9, 3.8568592277848387`*^9}, {3.8568595887756557`*^9,
+  3.856859603826436*^9}, {3.856859640747919*^9,
+  3.856859642673493*^9}},ExpressionUUID->"c6bed536-b853-4ae5-896d-\
+07aa3e9afe92"]
+},
+WindowSize->{1386, 762},
+WindowMargins->{{0, Automatic}, {0, Automatic}},
+FrontEndVersion->"13.0 for Linux x86 (64-bit) (December 2, 2021)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"a0866db8-456d-4eef-b9fb-776100ed89c6"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 607, 16, 92, "Input",ExpressionUUID->"649ed2be-2e44-48d8-ba4e-19fe4dd2818e"],
+Cell[1168, 38, 1198, 30, 133, "Input",ExpressionUUID->"f7c5cf11-c8a4-4ea2-9cca-6f842879dcce"],
+Cell[2369, 70, 1960, 48, 278, "Input",ExpressionUUID->"c6bed536-b853-4ae5-896d-07aa3e9afe92"]
+}
+]
+*)

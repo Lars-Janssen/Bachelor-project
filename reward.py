@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-players = 3
+players = 2
 actions = 2
 
 
@@ -20,16 +20,16 @@ def bintodec(list):
     return output
 
 
-rewards = [256 - i for i in range(actions ** players)]
-d = 99/100
+rewards = [0, 3/2, -1/2, 1]
+d = 34/100
 
-for k in range(actions ** (actions ** players)):
-    p2 = dectobin(k)
-    best_strats = []
+for s2 in range(actions ** (actions ** players)):
+    p2 = dectobin(s2)
+    counter = []
     for start in range(actions ** players):
         amounts = []
-        for i in range(actions ** (actions ** players)):
-            p1 = dectobin(i)
+        for s1 in range(actions ** (actions ** players)):
+            p1 = dectobin(s1)
             loop = []
             s = start
             statelist = [start]
@@ -58,9 +58,10 @@ for k in range(actions ** (actions ** players)):
 
         temp = list(np.flatnonzero(amounts == np.max(amounts)))
         best_move = list({dectobin(i)[start] for i in temp})
+
         if len(best_move) > 1:
             print('Panic')
 
-        best_strats.append(best_move[0])
+        counter.append(best_move[0])
 
-    print(p2, best_strats, bintodec(p2)+1, bintodec(best_strats)+1)
+    print(p2, counter, bintodec(p2)+1, bintodec(counter)+1)
