@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import multiprocessing as mp
 
 import numpy as np
@@ -8,11 +9,10 @@ from tqdm import tqdm
 
 import batch
 
-# Amount of times the batch_size is doubled and e is halved.
-doubles = 4
+doubles = 5
 
 # The amount of rounds in each game.
-batch_size = 1000 * (2 ** doubles)
+batch_size = 100
 
 # How often each batch is run for a delta.
 iterations = 50
@@ -21,39 +21,57 @@ iterations = 50
 a_rate = 1
 
 # The values of the rewards.
-t, r, p, s = 1.5, 1, 0, -0.5
+t, r, p, s = 1, 5/10, 2/10, 0
 r1 = [p, t, s, r]
 
-# The strategy of the opponent.
-p2 = [0, 0, 0, 1]
+# The strateies.
+p1 = [0, 1, 1, 0]
+p2 = [1, 0, 0, 1]
 
 # The probability that player 2 makes a move different to its strategy.
-e = 0.1 / (2 ** doubles)
+e = 1/10
 d = 0
 
 
 def dectobin(number):
     """Converts a decimal number to a list of binary numbers of length 4."""
     output = [int(x) for x in bin(number)[2:]]
-    return [0] * (4 - len(output)) + output
+    return [0] * (8 - len(output)) + output
 
 
 def test_delta(delta):
     """Function to run in parallel."""
-    batch1 = batch.batch(delta, e, batch_size, p2, r1)
+    batch1 = batch.batch(delta, e, batch_size, p1, p2, r1)
+    batch1.run()
+    return batch1.return_values()
+
+
+def test_graph(pair):
+    """Function to run in parallel."""
+    p1 = pair[0:4]
+    p2 = pair[4:]
+    delta = 9/10
+    batch1 = batch.batch(delta, e, batch_size, p1, p2, r1)
     batch1.run()
     return batch1.return_values()
 
 
 class counterstrats:
-    def __init__(self, start, end, steps):
+    def __init__(self, start, end, steps, type):
+        self.start = start
+        self.end = end
+        self.steps = steps
+        self.type = type
         # Make a list of the deltas to check.
         self.deltas = [(start + (end - start) * i / steps) /
                        100 for i in range(steps)]
-        self.new_strat1 = [0, 0, 0, 0]
+        self.new_strat = [0, 0, 0, 0, 0, 0, 0, 0]
         # Make a list where we put how many times each strat is chosen
         # as the new one.
-        self.new_strat = np.zeros((len(self.deltas), 16))
+        if type == 2:
+            self.stats = np.zeros((len(self.deltas), 256))
+        elif type == 1:
+            self.stats = np.zeros((256, 256))
 
     def get_data(self):
         for i in tqdm(range(len(self.deltas))):
@@ -69,31 +87,88 @@ class counterstrats:
 
             # Add the results to new_strat.
             for j in range(len(result)):
-                for k in range(len(result[0])):
-                    self.new_strat1[k] = int(result[j][k][0] < result[j][k][1])
-                self.new_strat[i][batch.bintodec(self.new_strat1)] += 1
+                for k in range(4):
+                    self.new_strat[k] = int(
+                        result[j][0][k][0] < result[j][0][k][1],
+                    )
+                    self.new_strat[k+4] = int(
+                        result[j]
+                        [1][k][0] < result[j][1][k][1],
+                    )
+                self.stats[i][batch.bintodec(self.new_strat)] += 1
+
+    def get_graph(self):
+        for i in tqdm(range(256)):
+            # Simultaneously run the batches.
+            pair = dectobin(i)
+
+            pool = mp.Pool(mp.cpu_count())
+            result = pool.map(
+                test_graph, [
+                    pair
+                    for _ in range(iterations)
+                ],
+            )
+            pool.close()
+            # Add the results to new_strat.
+            for j in range(len(result)):
+                for k in range(4):
+                    self.new_strat[k] = int(
+                        result[j][0][k][0] < result[j][0][k][1],
+                    )
+                    self.new_strat[k+4] = int(
+                        result[j]
+                        [1][k][0] < result[j][1][k][1],
+                    )
+                self.stats[i][batch.bintodec(self.new_strat)] += 1
 
     def print_and_plot(self):
-        # Print the strats for each delta.
-        for i in range(len(self.new_strat)):
-            print(self.deltas[i], self.new_strat[i])
+        if self.type == 2:
 
-        # Add a line to plot.
-        G = []
-        for i in range(len(self.new_strat)):
-            G.append(self.new_strat[i][0])
+            # Print the strats for each delta.
+            for i in range(len(self.stats)):
+                print(self.deltas[i], self.stats[i])
 
-        # Make the plot.
-        plt.plot(self.deltas, G)
-        plt.legend(['[0,0,0,0]'])
-        plt.ylim(0, iterations + iterations / 10)
-        plt.axvline(x=1 / 3, ymin=0, ymax=iterations, color='orange')
-        plt.title(str(batch_size))
-        plt.show()
-        plt.savefig('Approx/' + str(batch_size) + '.png')
+            # Add a line to plot.
+            G1 = []
+            G2 = []
+            for i in range(len(self.stats)):
+                G1.append(self.stats[i][0] / iterations)
+                G2.append(self.stats[i][12] / iterations)
+
+            # Make the plot.
+            plt.plot(self.deltas, G1)
+            plt.plot(self.deltas, G2)
+            plt.xlabel('\u03B4')
+            plt.ylabel('probability')
+            plt.legend(['[0,0,0,0]', '[1,1,0,0]'])
+            plt.axvline(x=1 / 4, ymin=0, ymax=iterations, color='orange')
+            plt.title(
+                'batch-size = ' + str(batch_size) +
+                ', \u03B5 = ' + str(e),
+            )
+            plt.savefig(
+                'Approx/' + str(self.start) + '-' + str(self.end) + '-' +
+                str(self.steps) + ', ' +
+                str(batch_size) + '-' + str(e) + '.png',
+            )
+            plt.show()
+
+        if self.type == 1:
+            arr = self.stats
+            print(arr)
+            with open('new_file.csv', 'w+') as my_csv:
+                csvWriter = csv.writer(my_csv, delimiter=',')
+                csvWriter.writerows(arr)
 
 
 if __name__ == '__main__':
-    counterstat = counterstrats(0, 100, 10)
-    counterstat.get_data()
-    counterstat.print_and_plot()
+    text = input()
+    if text == '1':
+        counterstat = counterstrats(0, 0, 0, 1)
+        counterstat.get_graph()
+        counterstat.print_and_plot()
+    if text == '2':
+        counterstat = counterstrats(0, 100, 10, 2)
+        counterstat.get_data()
+        counterstat.print_and_plot()

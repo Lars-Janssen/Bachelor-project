@@ -20,6 +20,7 @@ def bintodec(list):
     return output
 
 
+# p,t,s,r
 rewards = [0, 3/2, -1/2, 1]
 d = 34/100
 
