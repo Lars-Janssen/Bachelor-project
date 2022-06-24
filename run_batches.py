@@ -9,10 +9,9 @@ from tqdm import tqdm
 
 import batch
 
-doubles = 5
 
 # The amount of rounds in each game.
-batch_size = 100
+batch_size = 10000
 
 # How often each batch is run for a delta.
 iterations = 50
@@ -21,15 +20,15 @@ iterations = 50
 a_rate = 1
 
 # The values of the rewards.
-t, r, p, s = 1, 5/10, 2/10, 0
+t, r, p, s = 1, 9/10, 1/10, 0
 r1 = [p, t, s, r]
 
-# The strateies.
-p1 = [0, 1, 1, 0]
-p2 = [1, 0, 0, 1]
+# The strategies.
+p1 = [0, 0, 0, 1]
+p2 = [0, 1, 0, 0]
 
 # The probability that player 2 makes a move different to its strategy.
-e = 1/10
+e = 1/100
 d = 0
 
 
@@ -132,17 +131,21 @@ class counterstrats:
             # Add a line to plot.
             G1 = []
             G2 = []
+            G3 = []
             for i in range(len(self.stats)):
                 G1.append(self.stats[i][0] / iterations)
-                G2.append(self.stats[i][12] / iterations)
+                G2.append(self.stats[i][208] / iterations)
+                G3.append(self.stats[i][209] / iterations)
 
             # Make the plot.
             plt.plot(self.deltas, G1)
             plt.plot(self.deltas, G2)
+            plt.plot(self.deltas, G3)
             plt.xlabel('\u03B4')
             plt.ylabel('probability')
-            plt.legend(['[0,0,0,0]', '[1,1,0,0]'])
+            plt.legend(['0', '208', '209'])
             plt.axvline(x=1 / 4, ymin=0, ymax=iterations, color='orange')
+            plt.axvline(x=3 / 4, ymin=0, ymax=iterations, color='green')
             plt.title(
                 'batch-size = ' + str(batch_size) +
                 ', \u03B5 = ' + str(e),
@@ -169,6 +172,6 @@ if __name__ == '__main__':
         counterstat.get_graph()
         counterstat.print_and_plot()
     if text == '2':
-        counterstat = counterstrats(0, 100, 10, 2)
+        counterstat = counterstrats(0, 100, 40, 2)
         counterstat.get_data()
         counterstat.print_and_plot()
